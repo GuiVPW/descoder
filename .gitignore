@@ -1,0 +1,15 @@
+api/node_modules
+api/yarn.lock
+api/yarn-error.log
+
+bot/node_modules
+bot/yarn.lock
+bot/yarn-error.log
+
+api/.pettierrc
+api/.prettierignore
+apí/.env
+
+bot/.pettierrc
+bot/.prettierignore
+bot/.env
