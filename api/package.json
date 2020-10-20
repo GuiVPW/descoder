@@ -29,14 +29,5 @@
  "scripts": {
   "dev": "nodemon index.ts",
 	"start": "ts-node index.ts"
- },
- "compilerOptions": {
-  "include": [
-   "src/**/*.ts",
-   "index.ts"
-  ],
-  "exclude": [
-   "node_modules"
-  ]
  }
 }
