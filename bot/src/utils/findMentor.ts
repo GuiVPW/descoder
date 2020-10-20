@@ -6,14 +6,12 @@ const findMentorEmbed = (
 	category: string
 ): EmbedField[] => {
 	const mentor: EmbedField[] = mentores
-		.filter(mentor => mentor.skill.includes(category))
-		.map(({ nome, descrição, skill, empresa }: Mentor) => ({
+		.filter((mentor: Mentor) => mentor.skills.join(',  ').includes(category))
+		.map(({ nome, descrição, skills, empresa }: Mentor) => ({
 			name: nome,
-			value: `**Skills**: ${skill}\n***Descrição***: ${descrição}\n***Empresa***: ${empresa}`,
+			value: `**Skills**: ${skills}\n***Descrição***: ${descrição}\n***Empresa***: ${empresa}`,
 			inline: false,
 		}))
-
-	console.log(mentor)
 
 	return mentor
 }
