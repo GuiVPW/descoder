@@ -38,10 +38,5 @@
   "exclude": [
    "node_modules"
   ]
- },
- "husky": {
-  "hooks": {
-   "pre-commit": "pretty-quick --staged"
-  }
  }
 }
