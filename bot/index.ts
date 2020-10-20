@@ -1,6 +1,5 @@
-import discord, { GuildMember, Message } from 'discord.js'
+import discord, { Message } from 'discord.js'
 import dotenv from 'dotenv'
-import { Mentor } from './src/types/Mentores'
 import helpCommand from './src/commands/help'
 import chooseCategoryCommand from './src/commands/categorias'
 import askMentoryCommand from './src/commands/mentoria'
@@ -44,34 +43,33 @@ bot.on('message', async (message: Message) => {
 		}
 	}
 
-	if (message.channel.type === 'dm') {
+	if (message.channel.type === 'dm' && !message.author.bot) {
 		const { data: mentores } = await getUsers()
 
 		if (!mentores)
-			message.reply(
+			return await message.reply(
 				'Não consegui acessar a API :worried: Procure um organizado na página `#tech-suporte`'
 			)
-		switch (content.toLowerCase()) {
-			case findTerm(content, 'mentoria'):
-				await askMentoryCommand(message)
-				break
-			case findTerm(content, 'escolher categoria '):
-				await chooseCategoryCommand(message, content, mentores)
-				break
-			case findTerm(content, 'escolher mentor'):
-				await chooseMentorCommand(message, mentores)
-				break
-			default:
-				break
-		}
-
 		if (
 			content.toLowerCase().includes('help') ||
 			content.toLowerCase().includes('comandos') ||
 			content.toLowerCase().includes('ajuda') ||
 			content.toLowerCase().includes('socorro')
 		)
-			helpCommand(message)
+			return helpCommand(message)
+
+		switch (content.toLowerCase()) {
+			case findTerm(content, 'mentoria'):
+				return await askMentoryCommand(message)
+			case findTerm(content, 'escolher categoria '):
+				return await chooseCategoryCommand(message, content, mentores)
+			case findTerm(content, 'escolher mentor'):
+				return await chooseMentorCommand(message, mentores)
+			default:
+				return await message.reply(
+					'Não entendi o quê você disse :frowning2: \nUtilize o comando `!help` para ver todos os comandos :warning:'
+				)
+		}
 	}
 })
 
