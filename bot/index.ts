@@ -7,6 +7,7 @@ import askMentoryCommand from './src/commands/mentoria'
 import chooseMentorCommand from './src/commands/mentor'
 import deleteAllCommand from './src/commands/delete'
 import findTerm from './src/utils/findTerm'
+import { getUsers } from './src/services/calls'
 dotenv.config()
 
 export const bot = new discord.Client()
@@ -43,25 +44,22 @@ bot.on('message', async (message: Message) => {
 		}
 	}
 
-	const mentores: Mentor[] = new Array(4).fill({
-		nome: 'Guilherme Vieira',
-		email: 'guivpw68@gmail.com',
-		descrição: 'Topzera',
-		calendly: 'https://google.com',
-		skill: 'técnica, ux',
-		empresa: 'MVP',
-	})
-
 	if (message.channel.type === 'dm') {
+		const { data: mentores } = await getUsers()
+
+		if (!mentores)
+			message.reply(
+				'Não consegui acessar a API :worried: Procure um organizado na página `#tech-suporte`'
+			)
 		switch (content.toLowerCase()) {
 			case findTerm(content, 'mentoria'):
-				askMentoryCommand(message)
+				await askMentoryCommand(message)
 				break
 			case findTerm(content, 'escolher categoria '):
-				chooseCategoryCommand(message, content, mentores)
+				await chooseCategoryCommand(message, content, mentores)
 				break
 			case findTerm(content, 'escolher mentor'):
-				chooseMentorCommand(message, mentores)
+				await chooseMentorCommand(message, mentores)
 				break
 			default:
 				break
