@@ -20,9 +20,11 @@ export const indexAll = async (
 
 export const index = async (req: Request, res: Response): Promise<Response> => {
 	try {
-		const { id } = req.params
+		const { nome } = req.params
 
-		const mentor = await User.findById(id).sort('-createdAt')
+		const mentor = await User.findOne({
+			nome: nome.replace(/ .*/, '').charAt(0).toUpperCase() + nome.slice(1)
+		}).sort('-createdAt')
 
 		if (!mentor) return res.status(502).json('Usuário não encontrado...')
 
@@ -43,7 +45,7 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
 			email,
 			descrição,
 			calendly,
-			skills: skills.split(',').map((skill: string) => skill.trim()),
+			skills: skills.split(', ').map((skill: string) => skill.trim()),
 			empresa
 		})
 

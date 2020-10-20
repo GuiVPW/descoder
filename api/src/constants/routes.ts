@@ -8,7 +8,7 @@ routes.get('/', (req: Request, res: Response) => {
 })
 
 routes.get('/users', users.indexAll)
-routes.get('/user/:id', users.index)
+routes.get('/user/:nome', users.index)
 routes.post('/users', users.store)
 
 export default routes
