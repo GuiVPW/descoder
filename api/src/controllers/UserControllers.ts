@@ -20,7 +20,8 @@ export const indexAll = async (
 
 export const index = async (req: Request, res: Response): Promise<Response> => {
 	try {
-		const { id } = req.query
+		const { id } = req.params
+
 		const mentor = await User.findById(id).sort('-createdAt')
 
 		if (!mentor) return res.status(502).json('Usuário não encontrado...')
