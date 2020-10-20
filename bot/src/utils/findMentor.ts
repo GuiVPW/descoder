@@ -9,7 +9,7 @@ const findMentorEmbed = (
 		.filter((mentor: Mentor) => mentor.skills.join(',  ').includes(category))
 		.map(({ nome, descrição, skills, empresa }: Mentor) => ({
 			name: nome,
-			value: `**Skills**: ${skills}\n***Descrição***: ${descrição}\n***Empresa***: ${empresa}`,
+			value: `***Skills***: ${skills}\n***Descrição***: ${descrição}\n***Empresa***: ${empresa}`,
 			inline: false,
 		}))
 
