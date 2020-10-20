@@ -3,6 +3,6 @@ export interface Mentor {
 	email: string
 	descrição: string
 	calendly: string
-	skill: string[]
+	skills: string[]
 	empresa: string
 }
