@@ -1,10 +1,11 @@
 import { Message } from 'discord.js'
 
-const categories: string[] = ['UX', 'Técnico', 'Business']
+const categories: string[] = ['Técnico', 'Business']
 
 const askMentoryCommand = async (message: Message) => {
 	await message.author.send(
-		'Vamos lá! :grin: \nEscolha uma das **categorias** abaixo para buscar mentorias disponíveis com o comando `Escolher categoria #{categoria}`. \nExemplo: `Escolher categoria #UX`.\n\n'
+		`Olá ${message.author.username}, ` +
+			'vamos lá! :grin: \nEscolha uma das **categorias** abaixo para buscar mentorias disponíveis com o comando `Escolher categoria #{categoria}`. \nExemplo: `Escolher categoria #técnico`.\n\n'
 	)
 	await message.author.send(`>>> ${categories.join('\n')}`)
 }
