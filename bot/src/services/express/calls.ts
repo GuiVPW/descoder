@@ -1,4 +1,4 @@
-import { Mentor } from '../types/Mentores'
+import { Mentor } from '../../types/Mentores'
 import api from './apiConfig'
 
 export const getUsers = async (): Promise<any | Mentor[]> => {
