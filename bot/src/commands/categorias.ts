@@ -1,12 +1,19 @@
 import { Message, MessageEmbed } from 'discord.js'
+import { getUsers } from '../services/express/calls'
 import { Mentor } from '../types/Mentores'
 import findMentorEmbed from '../utils/findMentor'
 
-const chooseCategoryCommand = async (
-	message: Message,
-	content: string,
-	mentores: Mentor[]
-) => {
+const chooseCategoryCommand = async (message: Message) => {
+	const { content } = message
+	const { data } = await getUsers()
+
+	const mentores: Mentor[] = data
+
+	if (!mentores)
+		return await message.reply(
+			'Não consegui acessar a API :worried: Procure um organizado na página `#tech-suporte`'
+		)
+
 	const categoryMatch = content.toLowerCase().match(/#(.*)$/)!
 
 	if (categoryMatch === null)
@@ -38,9 +45,7 @@ const chooseCategoryCommand = async (
 			.setColor('#fafafa')
 			.setTitle(
 				`Lista de mentores com a categoria ${
-					category === 'ux'
-						? category.toUpperCase()
-						: category.charAt(0).toUpperCase() + category.slice(1)
+					category.charAt(0).toUpperCase() + category.slice(1)
 				}\n`
 			)
 			.addFields(mentors)
