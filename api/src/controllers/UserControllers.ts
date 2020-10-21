@@ -1,6 +1,10 @@
 import { Request, Response } from 'express'
 
-import User from '../models/Schemas'
+import * as Schemas from '../models/Schemas'
+
+const {
+	default: { User }
+} = Schemas
 
 export const indexAll = async (
 	req: Request,

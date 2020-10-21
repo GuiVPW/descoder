@@ -1,5 +1,5 @@
 import mongoose from '../database/connection'
-import { UserSchema } from '../types/UserSchema'
+import { UserSchema, EquipeSchema } from '../types/Schemas'
 
 const UserSchema = new mongoose.Schema(
 	{
@@ -32,6 +32,18 @@ const UserSchema = new mongoose.Schema(
 	}
 )
 
-const User = mongoose.model<UserSchema>('User', UserSchema)
+const EquipeSchema = new mongoose.Schema({
+	nome: {
+		type: String,
+		required: true
+	},
+	participantes: {
+		type: [String],
+		required: true
+	}
+})
 
-export default User
+const User = mongoose.model<UserSchema>('User', UserSchema)
+const Equipe = mongoose.model<EquipeSchema>('User', EquipeSchema)
+
+export default { User, Equipe }

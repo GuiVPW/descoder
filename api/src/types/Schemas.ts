@@ -8,3 +8,8 @@ export interface UserSchema extends mongoose.Document {
 	skills: string[]
 	empresa: string
 }
+
+export interface EquipeSchema extends mongoose.Document {
+	nome: string
+	participantes: string[]
+}
