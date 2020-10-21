@@ -6,7 +6,8 @@ import askMentoryCommand from './src/commands/mentoria'
 import chooseMentorCommand from './src/commands/mentor'
 import deleteAllCommand from './src/commands/delete'
 import findTerm from './src/utils/findTerm'
-import { getUsers } from './src/services/calls'
+import isParticipatingCommand from './src/commands/participando'
+import findRepositoryCommand from './src/commands/repositorio'
 dotenv.config()
 
 export const bot = new discord.Client()
@@ -29,7 +30,7 @@ bot.on('message', async (message: Message) => {
 				)
 				break
 			case '!deleteAll':
-				deleteAllCommand(message, 'text')
+				deleteAllCommand(message)
 				break
 
 			case '!help':
@@ -44,30 +45,33 @@ bot.on('message', async (message: Message) => {
 	}
 
 	if (message.channel.type === 'dm' && !message.author.bot) {
-		const { data: mentores } = await getUsers()
-
-		if (!mentores)
-			return await message.reply(
-				'Não consegui acessar a API :worried: Procure um organizado na página `#tech-suporte`'
-			)
-		if (
-			content.toLowerCase().includes('help') ||
-			content.toLowerCase().includes('comandos') ||
-			content.toLowerCase().includes('ajuda') ||
-			content.toLowerCase().includes('socorro')
-		)
-			return helpCommand(message)
-
-		switch (content.toLowerCase()) {
+		switch (content) {
 			case findTerm(content, 'mentoria'):
 				return await askMentoryCommand(message)
 			case findTerm(content, 'escolher categoria '):
-				return await chooseCategoryCommand(message, content, mentores)
+				return await chooseCategoryCommand(message)
 			case findTerm(content, 'escolher mentor'):
-				return await chooseMentorCommand(message, mentores)
+				return await chooseMentorCommand(message)
+			case findTerm(content, 'participando'):
+				return await isParticipatingCommand(message)
+			case findTerm(content, 'buscar time') ||
+				findTerm(content, 'buscar equipe'):
+				await message.author.send(
+					'Hmmmm, estou procurando seu repositório :mag_right:'
+				)
+				return await findRepositoryCommand(message)
+			case findTerm(content, 'obrigado') || findTerm(content, 'obrigada'):
+				return await message.reply(
+					'Assim você me deixa sem jeito :blush: \nPor nada'
+				)
+			case findTerm(content, 'help') ||
+				findTerm(content, 'comandos') ||
+				findTerm(content, 'ajuda') ||
+				findTerm(content, 'socorro'):
+				return await helpCommand(message)
 			default:
 				return await message.reply(
-					'Não entendi o quê você disse :frowning2: \nUtilize o comando `!help` para ver todos os comandos :warning:'
+					'Não entendi o quê você disse :frowning2: \nUtilize o comando `ajuda` para ver todos meus comandos :warning:'
 				)
 		}
 	}
