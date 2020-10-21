@@ -27,7 +27,7 @@ const chooseCategoryCommand = async (message: Message) => {
 
 	if (mentors.length === 0) {
 		return await message.author.send(
-			'Desculpe, mas essa categoria não existe :worried: \nTente novamente!'
+			'Desculpe, mas não existem disponíveis nessa categoria :worried: \nTente novamente em algumas horas!'
 		)
 	} else {
 		await message.author.send(

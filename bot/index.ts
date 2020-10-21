@@ -1,4 +1,4 @@
-import discord, { Message } from 'discord.js'
+import discord, { Message, TextChannel } from 'discord.js'
 import dotenv from 'dotenv'
 import helpCommand from './src/commands/help'
 import chooseCategoryCommand from './src/commands/categorias'
@@ -8,6 +8,10 @@ import deleteAllCommand from './src/commands/delete'
 import findTerm from './src/utils/findTerm'
 import isParticipatingCommand from './src/commands/participando'
 import findRepositoryCommand from './src/commands/repositorio'
+import askChannelCommand from './src/commands/canal'
+import findChannelCommand from './src/commands/equipes'
+import enterChannelCommand from './src/commands/entrar'
+import acessoCommand from './src/commands/acess'
 dotenv.config()
 
 export const bot = new discord.Client()
@@ -15,6 +19,49 @@ export const bot = new discord.Client()
 const token = process.env.TOKEN
 
 bot.login(token)
+
+bot.on('guildMemberAdd', async member => {
+	const logChannel = member.guild.channels.cache.find(
+		ch => ch.id === '766740926437392407'
+	)
+
+	const channel = bot.guilds.cache.get('766740925756997634')!
+	const role = channel.roles.guild.roles.cache.find(
+		role => role.name === 'Membro'
+	)!
+
+	const addRole = await member.roles.add(role)
+
+	if (!logChannel || !addRole) return
+
+	if (
+		!((logChannel): logChannel is TextChannel => logChannel.type === 'text')(
+			logChannel
+		)
+	)
+		return
+
+	await logChannel.send(
+		`Olá ${member}, bem-vindo ao canal da Prensa, aceita um cafézinho? :coffee:`
+	)
+})
+
+bot.on('guildMemberRemove', member => {
+	const exitChannel = member.guild.channels.cache.find(
+		ch => ch.id === '766740926437392407'
+	)
+
+	if (!exitChannel) return
+
+	if (
+		!((exitChannel): exitChannel is TextChannel => exitChannel.type === 'text')(
+			exitChannel
+		)
+	)
+		return
+
+	exitChannel.send(`Adeus ${member}, sentiremos sua falta aqui :pensive:`)
+})
 
 bot.on('message', async (message: Message) => {
 	const { content } = message
@@ -29,6 +76,9 @@ bot.on('message', async (message: Message) => {
 						'> e execute o comando `Agendar mentoria` :wink:'
 				)
 				break
+			case '!acesso':
+				acessoCommand(message)
+				break
 			case '!deleteAll':
 				deleteAllCommand(message)
 				break
@@ -37,10 +87,9 @@ bot.on('message', async (message: Message) => {
 				helpCommand(message)
 				break
 			default:
-				await message.reply(
+				return await message.reply(
 					'Não entendi o quê você disse :frowning2: \nUtilize o comando `!help` para ver todos os comandos :warning:'
 				)
-				break
 		}
 	}
 
@@ -48,22 +97,52 @@ bot.on('message', async (message: Message) => {
 		switch (content) {
 			case findTerm(content, 'mentoria'):
 				return await askMentoryCommand(message)
+
 			case findTerm(content, 'escolher categoria '):
+				await message.author.send(
+					'Procurando mentores nessa categoria :face_with_monocle:'
+				)
 				return await chooseCategoryCommand(message)
+
 			case findTerm(content, 'escolher mentor'):
 				return await chooseMentorCommand(message)
+
 			case findTerm(content, 'participando'):
 				return await isParticipatingCommand(message)
-			case findTerm(content, 'buscar time') ||
-				findTerm(content, 'buscar equipe'):
+
+			case findTerm(content, 'buscar'):
 				await message.author.send(
 					'Hmmmm, estou procurando seu repositório :mag_right:'
 				)
 				return await findRepositoryCommand(message)
+
+			case findTerm(content, 'time'):
+				return await askChannelCommand(message)
+
+			case findTerm(content, 'estou na equipe'):
+				await message.author.send(
+					'Hmmmm, estou procurando sua equipe :mag_right:'
+				)
+				return await findChannelCommand(message)
+
+			case findTerm(content, 'entrar no canal'):
+				return await enterChannelCommand(message)
+
 			case findTerm(content, 'obrigado') || findTerm(content, 'obrigada'):
 				return await message.reply(
 					'Assim você me deixa sem jeito :blush: \nPor nada'
 				)
+			case findTerm(content, 'quem é guilherme'):
+				await message.reply(
+					'Meu criador, o dono da minha vida, para alguns um ponto de luz, para outros algo irreal, para o faminto comida, para o rico a felicidade, para a criança o pai, para o ingênuo a sabedoria. :heart_eyes:'
+				)
+				return setTimeout(async () => {
+					await message.reply(
+						'Na verdade é só o cara que criou esse bot mesmo :sweat_smile:\n' +
+							'Se você descobriu esse comando, mande uma mensagem pra ele dizendo: "Socorram-me, subi no ônibus em marrocos".'
+					)
+				}, 7000)
+
 			case findTerm(content, 'help') ||
 				findTerm(content, 'comandos') ||
 				findTerm(content, 'ajuda') ||
