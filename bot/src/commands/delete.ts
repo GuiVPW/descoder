@@ -15,6 +15,10 @@ const deleteAllCommand = async (message: Message) => {
 					.setColor('#fafafa')
 					.setTitle('Deletado 100 mensagens num piscar de olhos! :star_struck:')
 			)
+	} else {
+		return await message.reply(
+			'parece que você não tem permissão para excluir tudo, tenha calma! :laughing:'
+		)
 	}
 }
 
