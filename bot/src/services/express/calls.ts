@@ -1,4 +1,5 @@
 import { Mentor } from '../../types/Mentores'
+import { Equipe } from '../../types/Equipes'
 import api from './apiConfig'
 
 export const getUsers = async (): Promise<any | Mentor[]> => {
@@ -8,8 +9,25 @@ export const getUsers = async (): Promise<any | Mentor[]> => {
 }
 
 export const getUser = async (nome: string): Promise<any | Mentor> => {
-	const user: Mentor = await api.get(`/user/${nome}`)
+	try {
+		const user: Mentor = await api.get(`/user/${nome}`)
+		if (!user) return false
+		return user
+	} catch (e) {
+		console.log(e)
+		return false
+	}
+}
 
-	if (!user) return false
-	return user
+export const getTeam = async (nome: string): Promise<any | Equipe> => {
+	try {
+		const equipe: Equipe = await api.get(`/equipe/${nome}`)
+
+		if (!equipe) return false
+
+		return equipe
+	} catch (e) {
+		console.log(e)
+		return false
+	}
 }
