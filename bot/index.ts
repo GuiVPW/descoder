@@ -12,20 +12,21 @@ import askChannelCommand from './src/commands/canal'
 import findChannelCommand from './src/commands/equipes'
 import enterChannelCommand from './src/commands/entrar'
 import acessoCommand from './src/commands/acess'
+import createCategoryCommand from './src/admin/commands/createCategory'
+import createTeamCommand from './src/admin/commands/createTeam'
 dotenv.config()
 
 export const bot = new discord.Client()
 
 const token = process.env.TOKEN
+const channelId = `${process.env.CHANNEL_ID}`
 
 bot.login(token)
 
 bot.on('guildMemberAdd', async member => {
-	const logChannel = member.guild.channels.cache.find(
-		ch => ch.id === '766740926437392407'
-	)
+	const logChannel = member.guild.channels.cache.find(ch => ch.id === channelId)
 
-	const channel = bot.guilds.cache.get('766740925756997634')!
+	const channel = bot.guilds.cache.get(channelId)!
 	const role = channel.roles.guild.roles.cache.find(
 		role => role.name === 'Membro'
 	)!
@@ -48,7 +49,7 @@ bot.on('guildMemberAdd', async member => {
 
 bot.on('guildMemberRemove', member => {
 	const exitChannel = member.guild.channels.cache.find(
-		ch => ch.id === '766740926437392407'
+		ch => ch.id === channelId
 	)
 
 	if (!exitChannel) return
@@ -64,7 +65,23 @@ bot.on('guildMemberRemove', member => {
 })
 
 bot.on('message', async (message: Message) => {
+	const channel = bot.guilds.cache.get(channelId)!
+
 	const { content } = message
+
+	if (
+		message.channel.id === '768598126373634109' &&
+		message.channel.type === 'text'
+	) {
+		switch (content) {
+			case findTerm(content, '!newteam'):
+				return await createTeamCommand(message, channel)
+			case findTerm(content, '!newcategory'):
+				return await createCategoryCommand(message, channel)
+			default:
+				return
+		}
+	}
 
 	if (message.channel.type === 'text') {
 		if (!content.startsWith('!')) return
@@ -126,7 +143,7 @@ bot.on('message', async (message: Message) => {
 				return await findChannelCommand(message)
 
 			case findTerm(content, 'entrar no canal'):
-				return await enterChannelCommand(message)
+				return await enterChannelCommand(message, channel)
 
 			case findTerm(content, 'obrigado') || findTerm(content, 'obrigada'):
 				return await message.reply(
