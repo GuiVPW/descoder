@@ -1,7 +1,17 @@
 import { Message } from 'discord.js'
+import { getUsers } from '../services/express/calls'
 import { Mentor } from '../types/Mentores'
 
-const chooseMentorCommand = async (message: Message, mentores: Mentor[]) => {
+const chooseMentorCommand = async (message: Message) => {
+	const { data } = await getUsers()
+
+	const mentores: Mentor[] = data
+
+	if (!mentores)
+		return await message.reply(
+			'Não consegui acessar a API :worried: Procure um organizado na página `#tech-suporte`'
+		)
+
 	const name = message.content.toLowerCase().replace('escolher mentor ', '')
 
 	if (name.length === 0) {
@@ -28,7 +38,7 @@ const chooseMentorCommand = async (message: Message, mentores: Mentor[]) => {
 			`Para poder marcar sua mentoria, escolha um horário entre os disponíveis na agenda de ${mentorName} através do link: ${mentor.calendly} e aguarde a confirmação da reunião no seu e-mail :wink:`
 		)
 		await message.author.send(
-			'Após a confirmação, no horário determinado, aguarde o mentor convidar você e sua equipe para uma sala privada para realizar a mentoria. \nSimples assim :blush:'
+			'Após a confirmação, no horário determinado, aguarde o mentor convidar você e seu time para uma sala privada para realizar a mentoria. \nSimples assim :blush:'
 		)
 	}
 }
