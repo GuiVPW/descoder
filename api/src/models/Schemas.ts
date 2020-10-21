@@ -32,18 +32,21 @@ const UserSchema = new mongoose.Schema(
 	}
 )
 
-const EquipeSchema = new mongoose.Schema({
-	nome: {
-		type: String,
-		required: true
+const EquipeSchema = new mongoose.Schema(
+	{
+		nome: {
+			type: String,
+			required: true
+		},
+		participantes: {
+			type: [String],
+			required: true
+		}
 	},
-	participantes: {
-		type: [String],
-		required: true
+	{
+		timestamps: true
 	}
-})
+)
 
-const User = mongoose.model<UserSchema>('User', UserSchema)
-const Equipe = mongoose.model<EquipeSchema>('User', EquipeSchema)
-
-export default { User, Equipe }
+export const User = mongoose.model<UserSchema>('User', UserSchema)
+export const Equipe = mongoose.model<EquipeSchema>('Equipe', EquipeSchema)

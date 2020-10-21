@@ -1,10 +1,6 @@
 import { Request, Response } from 'express'
 
-import * as Schemas from '../models/Schemas'
-
-const {
-	default: { Equipe }
-} = Schemas
+import { Equipe } from '../models/Schemas'
 
 export const indexAll = async (
 	req: Request,
@@ -27,7 +23,7 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
 		const { nome } = req.params
 
 		const equipe = await Equipe.findOne({
-			nome: nome.replace(/ .*/, '')
+			nome: nome.replace('_', ' ')
 		})
 
 		if (!equipe) return res.status(502).json('Equipe não encontrada...')
