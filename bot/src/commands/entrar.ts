@@ -29,7 +29,7 @@ const enterChannelCommand = async (message: Message, channel: Guild) => {
 
 	const addRole = await user?.roles.add(role.id)
 
-	if (!addRole || removeAllRoles)
+	if (!addRole || !removeAllRoles)
 		return await message.author.send(
 			'Opa... não consegui te colocar nessa equipe :worried:'
 		)
