@@ -12,7 +12,6 @@ import askChannelCommand from './src/commands/canal'
 import findChannelCommand from './src/commands/equipes'
 import enterChannelCommand from './src/commands/entrar'
 import acessoCommand from './src/commands/acess'
-import createCategoryCommand from './src/admin/commands/createCategory'
 import createTeamCommand from './src/admin/commands/createTeam'
 dotenv.config()
 
@@ -24,9 +23,12 @@ const channelId = `${process.env.CHANNEL_ID}`
 bot.login(token)
 
 bot.on('guildMemberAdd', async member => {
-	const logChannel = member.guild.channels.cache.find(ch => ch.id === channelId)
+	const logChannel = member.guild.channels.cache.find(
+		ch => ch.id === '766740926437392407'
+	)
 
 	const channel = bot.guilds.cache.get(channelId)!
+
 	const role = channel.roles.guild.roles.cache.find(
 		role => role.name === 'Membro'
 	)!
@@ -49,7 +51,7 @@ bot.on('guildMemberAdd', async member => {
 
 bot.on('guildMemberRemove', member => {
 	const exitChannel = member.guild.channels.cache.find(
-		ch => ch.id === channelId
+		ch => ch.id === '766740926437392407'
 	)
 
 	if (!exitChannel) return
@@ -69,15 +71,17 @@ bot.on('message', async (message: Message) => {
 
 	const { content } = message
 
-	if (
-		message.channel.id === '768598126373634109' &&
-		message.channel.type === 'text'
-	) {
-		switch (content) {
-			case findTerm(content, '!newteam'):
-				return await createTeamCommand(message, channel)
-			case findTerm(content, '!newcategory'):
-				return await createCategoryCommand(message, channel)
+	if (message.channel.id === '768598126373634109') {
+		const contentPrivate = content
+		switch (contentPrivate) {
+			case findTerm(contentPrivate, '!newteam'):
+				return createTeamCommand(message, channel)
+			case '!deleteMessages':
+				deleteAllCommand(message)
+				break
+			case '!help':
+				helpCommand(message)
+				break
 			default:
 				return
 		}
@@ -104,7 +108,7 @@ bot.on('message', async (message: Message) => {
 				helpCommand(message)
 				break
 			default:
-				return await message.reply(
+				return message.reply(
 					'Não entendi o quê você disse :frowning2: \nUtilize o comando `!help` para ver todos os comandos :warning:'
 				)
 		}
@@ -113,42 +117,40 @@ bot.on('message', async (message: Message) => {
 	if (message.channel.type === 'dm' && !message.author.bot) {
 		switch (content) {
 			case findTerm(content, 'mentoria'):
-				return await askMentoryCommand(message)
+				return askMentoryCommand(message)
 
 			case findTerm(content, 'escolher categoria '):
 				await message.author.send(
 					'Procurando mentores nessa categoria :face_with_monocle:'
 				)
-				return await chooseCategoryCommand(message)
+				return chooseCategoryCommand(message)
 
 			case findTerm(content, 'escolher mentor'):
-				return await chooseMentorCommand(message)
+				return chooseMentorCommand(message)
 
 			case findTerm(content, 'participando'):
-				return await isParticipatingCommand(message)
+				return isParticipatingCommand(message)
 
 			case findTerm(content, 'buscar'):
 				await message.author.send(
 					'Hmmmm, estou procurando seu repositório :mag_right:'
 				)
-				return await findRepositoryCommand(message)
+				return findRepositoryCommand(message)
 
 			case findTerm(content, 'time'):
-				return await askChannelCommand(message)
+				return askChannelCommand(message)
 
 			case findTerm(content, 'estou na equipe'):
 				await message.author.send(
 					'Hmmmm, estou procurando sua equipe :mag_right:'
 				)
-				return await findChannelCommand(message)
+				return findChannelCommand(message)
 
 			case findTerm(content, 'entrar no canal'):
-				return await enterChannelCommand(message, channel)
+				return enterChannelCommand(message, channel)
 
 			case findTerm(content, 'obrigado') || findTerm(content, 'obrigada'):
-				return await message.reply(
-					'Assim você me deixa sem jeito :blush: \nPor nada'
-				)
+				return message.reply('Assim você me deixa sem jeito :blush: \nPor nada')
 			case findTerm(content, 'quem é guilherme'):
 				await message.reply(
 					'Meu criador, o dono da minha vida, para alguns um ponto de luz, para outros algo irreal, para o faminto comida, para o rico a felicidade, para a criança o pai, para o ingênuo a sabedoria. :heart_eyes:'
@@ -164,9 +166,9 @@ bot.on('message', async (message: Message) => {
 				findTerm(content, 'comandos') ||
 				findTerm(content, 'ajuda') ||
 				findTerm(content, 'socorro'):
-				return await helpCommand(message)
+				return helpCommand(message)
 			default:
-				return await message.reply(
+				return message.reply(
 					'Não entendi o quê você disse :frowning2: \nUtilize o comando `ajuda` para ver todos meus comandos :warning:'
 				)
 		}
