@@ -1,12 +1,10 @@
-import { Message } from 'discord.js'
+import { Guild, Message } from 'discord.js'
 import { bot } from '../..'
 
-const enterChannelCommand = async (message: Message) => {
+const enterChannelCommand = async (message: Message, channel: Guild) => {
 	const equipeName: string = message.content
 		.replace('Entrar no canal ', '')
 		.replace('entrar no canal ', '')
-
-	const channel = bot.guilds.cache.get('766740925756997634')!
 
 	const user = channel.members.cache.get(message.author.id)
 
@@ -27,9 +25,11 @@ const enterChannelCommand = async (message: Message) => {
 			'Acho que essa equipe não existe... :worried: \nVocê tem certeza que digitou o nome certo?'
 		)
 
+	const removeAllRoles = await user!.roles.set([])
+
 	const addRole = await user?.roles.add(role.id)
 
-	if (!addRole)
+	if (!addRole || removeAllRoles)
 		return await message.author.send(
 			'Opa... não consegui te colocar nessa equipe :worried:'
 		)
