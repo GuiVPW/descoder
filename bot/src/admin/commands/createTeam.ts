@@ -2,7 +2,7 @@ import { Guild, Message, OverwriteResolvable } from 'discord.js'
 import createCategory from '../functions/createCategory'
 import createRole from '../functions/createRole'
 import createChannel from '../functions/createChannel'
-import { Canal } from '../../types/ChannelCreated'
+import { Canal, ChannelCreateResolve } from '../../types/ChannelCreated'
 
 const createTeamCommand = async (message: Message, channel: Guild) => {
 	const teamNames: string[] = message.content
@@ -17,22 +17,31 @@ const createTeamCommand = async (message: Message, channel: Guild) => {
 			{
 				type: 'role',
 				id: '740257948919660707',
+				allow: 'ADMINISTRATOR',
 			},
 			{
 				type: 'role',
 				id: '740259203171745814',
+				allow: 'ADMINISTRATOR',
 			},
 			{
 				type: 'role',
 				id: '768110961445830677',
+				allow: 'ADMINISTRATOR',
 			},
 			{
 				type: 'role',
 				id: '768111403277090836',
+				allow: 'ADMINISTRATOR',
 			},
 			{
 				type: 'role',
 				id: '768580642077802496',
+				deny: ['VIEW_CHANNEL', 'CONNECT'],
+			},
+			{
+				type: 'role',
+				id: '766740925756997634',
 				deny: ['VIEW_CHANNEL', 'CONNECT'],
 			},
 		]
@@ -54,10 +63,6 @@ const createTeamCommand = async (message: Message, channel: Guild) => {
 			roleCreate
 		)
 
-		categoryCreate.updateOverwrite(channel.roles.guild.roles.everyone, {
-			VIEW_CHANNEL: false,
-		})
-
 		if (!categoryCreate) {
 			return await message.reply(
 				`não foi possível criar a categoria ${teamName} :worried:`
@@ -77,24 +82,29 @@ const createTeamCommand = async (message: Message, channel: Guild) => {
 			},
 		]
 
-		canais.forEach(async ({ name, type, tipo }: Canal) => {
-			const canal = await createChannel({
-				name,
-				channel,
-				roles,
-				teamName,
-				categoryCreate,
-				roleCreate,
-				tipo,
-				type,
-			})
-			if (!canal)
-				return await message.reply(
-					`não consegui criar o canal de ${tipo} :worried:`
-				)
-		})
+		if (categoryCreate) {
+			try {
+				canais.forEach(async ({ name, type, tipo }: Canal) => {
+					const canal: ChannelCreateResolve = await createChannel({
+						name,
+						channel,
+						roles,
+						teamName,
+						categoryCreate,
+						roleCreate,
+						tipo,
+						type,
+					})
+					if (!canal)
+						return await message.reply(
+							`não consegui criar o canal de ${tipo} :worried:`
+						)
+				})
+			} catch (e) {
+				console.log(e)
+			}
+		}
 	})
-
 	return await message.reply(`categorias e roles criados com sucesso! :owl:`)
 }
 

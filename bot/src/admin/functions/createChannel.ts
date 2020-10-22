@@ -1,13 +1,11 @@
-import { RoleAllowed, RoleDenied } from '../../configurations/roles'
 import { ChannelCreate, ChannelCreateResolve } from '../../types/ChannelCreated'
+import { RoleAllowed, RoleDenied } from '../../configurations/roles'
 
 const createChannel = async ({
 	name,
 	channel,
-	roles,
 	teamName,
 	categoryCreate,
-	roleCreate,
 	tipo,
 	type,
 }: ChannelCreate): Promise<ChannelCreateResolve> => {
@@ -19,18 +17,10 @@ const createChannel = async ({
 			topic: `Canal de ${tipo} da equipe ${teamName}`,
 			nsfw: false,
 			reason: `Canal de ${tipo} criado para a equipe ${teamName}.`,
-			permissionOverwrites: [
-				{
-					type: 'role',
-					id: roleCreate.id,
-					allow: RoleAllowed,
-					deny: RoleDenied,
-				},
-				...roles,
-			],
 			parent: categoryCreate.id,
 		}
 	)
+
 	return channelCreate
 }
 
