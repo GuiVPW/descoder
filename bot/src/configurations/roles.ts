@@ -1,0 +1,39 @@
+import { PermissionResolvable } from 'discord.js'
+
+export const RoleAllowed: PermissionResolvable = [
+	'CONNECT',
+	'VIEW_CHANNEL',
+	'STREAM',
+	'MUTE_MEMBERS',
+	'USE_EXTERNAL_EMOJIS',
+	'SPEAK',
+	'ATTACH_FILES',
+	'EMBED_LINKS',
+	'SEND_MESSAGES',
+	'MANAGE_CHANNELS',
+	'USE_VAD',
+]
+
+export const RoleDenied: PermissionResolvable = [
+	'ADD_REACTIONS',
+	'ADMINISTRATOR',
+	'BAN_MEMBERS',
+	'CHANGE_NICKNAME',
+	'CREATE_INSTANT_INVITE',
+	'DEAFEN_MEMBERS',
+	'KICK_MEMBERS',
+	'MANAGE_EMOJIS',
+	'MANAGE_GUILD',
+	'MANAGE_MESSAGES',
+	'MANAGE_NICKNAMES',
+	'MANAGE_ROLES',
+	'MANAGE_WEBHOOKS',
+	'MENTION_EVERYONE',
+	'MOVE_MEMBERS',
+	'PRIORITY_SPEAKER',
+	'SEND_TTS_MESSAGES',
+	'VIEW_AUDIT_LOG',
+	'VIEW_GUILD_INSIGHTS',
+]
+
+export default RoleAllowed
