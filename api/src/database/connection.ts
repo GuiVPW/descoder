@@ -3,7 +3,7 @@ import dotenv from 'dotenv-safe'
 
 dotenv.config()
 
-const connectionURI = `mongodb+srv://${process.env.MONGOUSER}:${process.env.MONGOPASS}@cluster0-innyn.mongodb.net/mentores?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true`
+const connectionURI = `mongodb+srv://${process.env.MONGOUSER}:${process.env.MONGOPASS}@cluster0-innyn.mongodb.net/hackathon?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true`
 
 mongoose.connect(connectionURI, {
 	useNewUrlParser: true,
