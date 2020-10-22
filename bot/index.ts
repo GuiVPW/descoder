@@ -13,6 +13,7 @@ import findChannelCommand from './src/commands/equipes'
 import enterChannelCommand from './src/commands/entrar'
 import acessoCommand from './src/commands/acess'
 import createTeamCommand from './src/admin/commands/createTeam'
+import listTeamsCommand from './src/commands/lista'
 dotenv.config()
 
 export const bot = new discord.Client()
@@ -33,7 +34,7 @@ bot.on('guildMemberAdd', async member => {
 		role => role.name === 'Membro'
 	)!
 
-	const addRole = await member.roles.add(role)
+	const addRole = member.roles.add(role)
 
 	if (!logChannel || !addRole) return
 
@@ -44,7 +45,7 @@ bot.on('guildMemberAdd', async member => {
 	)
 		return
 
-	await logChannel.send(
+	logChannel.send(
 		`Olá ${member}, bem-vindo ao canal da Prensa, aceita um cafézinho? :coffee:`
 	)
 })
@@ -93,7 +94,7 @@ bot.on('message', async (message: Message) => {
 		if (!content.startsWith('!')) return
 		switch (content) {
 			case '!mentoria':
-				await message.reply(
+				message.reply(
 					'se você deseja marcar uma mentoria, me chame por aqui <@' +
 						process.env.BOT_ID +
 						'> e execute o comando `Agendar mentoria` :wink:'
@@ -122,7 +123,7 @@ bot.on('message', async (message: Message) => {
 				return askMentoryCommand(message)
 
 			case findTerm(content, 'escolher categoria '):
-				await message.author.send(
+				message.author.send(
 					'Procurando mentores nessa categoria :face_with_monocle:'
 				)
 				return chooseCategoryCommand(message)
@@ -134,16 +135,20 @@ bot.on('message', async (message: Message) => {
 				return isParticipatingCommand(message)
 
 			case findTerm(content, 'buscar repositório'):
-				await message.author.send(
+				message.author.send(
 					'Hmmmm, estou procurando seu repositório :mag_right:'
 				)
 				return findRepositoryCommand(message)
 
-			case findTerm(content, 'estou na equipe'):
-				await message.author.send(
-					'Hmmmm, estou procurando sua equipe :mag_right:'
-				)
+			case findTerm(content, 'procurar'):
+				message.author.send('Hmmmm, estou procurando sua equipe :mag_right:')
 				return findChannelCommand(message)
+
+			case findTerm(content, 'ver todas'):
+				message.author.send(
+					'Hmmmm, estou procurando todas as equipes disponíveis :mag_right:'
+				)
+				return listTeamsCommand(message)
 
 			case findTerm(content, 'entrar no canal'):
 				return enterChannelCommand(message, channel)
@@ -151,11 +156,11 @@ bot.on('message', async (message: Message) => {
 			case findTerm(content, 'obrigado') || findTerm(content, 'obrigada'):
 				return message.reply('Assim você me deixa sem jeito :blush: \nPor nada')
 			case findTerm(content, 'quem é guilherme'):
-				await message.reply(
+				message.reply(
 					'Meu criador, o dono da minha vida, para alguns um ponto de luz, para outros algo irreal, para o faminto comida, para o rico a felicidade, para a criança o pai, para o ingênuo a sabedoria. :heart_eyes:'
 				)
 				return setTimeout(async () => {
-					await message.reply(
+					message.reply(
 						'Na verdade é só o cara que criou esse bot mesmo :sweat_smile:\n' +
 							'Se você descobriu esse comando, mande uma mensagem pra ele dizendo: "Socorram-me, subi no ônibus em marrocos".'
 					)

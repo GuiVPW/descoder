@@ -21,11 +21,24 @@ export const getUser = async (nome: string): Promise<any | Mentor> => {
 
 export const getTeam = async (nome: string): Promise<any | Equipe> => {
 	try {
-		const equipe: Equipe = await api.get(`/equipe/${nome}`)
+		const equipe = await api.get(`/equipe/${nome}`)
 
 		if (!equipe) return false
 
 		return equipe
+	} catch (e) {
+		console.log(e)
+		return false
+	}
+}
+
+export const getAllTeams = async (): Promise<any | Equipe[]> => {
+	try {
+		const equipes = await api.get(`/equipes`)
+
+		if (!equipes) return false
+
+		return equipes
 	} catch (e) {
 		console.log(e)
 		return false
