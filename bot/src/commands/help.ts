@@ -14,7 +14,7 @@ const helpCommand = async (message: Message) => {
 	]
 
 	if (message.channel.type === 'text')
-		messages.unshift(
+		messages.push(
 			`Para utilizar os comandos abaixo, me chame por aqui <@${process.env.BOT_ID}>.\n`
 		)
 
