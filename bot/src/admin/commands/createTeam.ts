@@ -5,9 +5,18 @@ import createChannel from '../functions/createChannel'
 import { Canal, ChannelCreateResolve } from '../../types/ChannelCreated'
 
 const createTeamCommand = async (message: Message, channel: Guild) => {
-	const teamNames: string[] = message.content
-		.replace('!newTeam ', '')
-		.split(',')
+	const validate = async (): Promise<string[]> => {
+		if (message.content.includes('Everything')) {
+			const teamNames: string =
+				'Union Squad, Team Connect, 42 destinos de um algoritmo, Code4Hope, IPay, Não tenho ainda, AISSI, Unidos do StackOverflow, FloripaHThon, L.L.L., LoveData, Paytrackers, Fênix, MDev - Made by Devs, 56Market, PayMasters, Foxy, Tech ET'
+			return teamNames.split(', ')
+		} else {
+			const split = message.content.replace('!newTeam ', '').split(', ')
+
+			return split
+		}
+	}
+	const teamNames = await validate()
 
 	teamNames.forEach(async (teamName: string) => {
 		if (channel.roles.cache.find(role => role.name === teamName))
