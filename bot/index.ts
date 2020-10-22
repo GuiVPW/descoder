@@ -76,9 +76,8 @@ bot.on('message', async (message: Message) => {
 		switch (contentPrivate) {
 			case findTerm(contentPrivate, '!newteam'):
 				return createTeamCommand(message, channel)
-			case '!deleteMessages':
-				deleteAllCommand(message)
-				break
+			case '!deleteCommands':
+				return deleteAllCommand(message)
 			case '!help':
 				helpCommand(message)
 				break
@@ -87,7 +86,10 @@ bot.on('message', async (message: Message) => {
 		}
 	}
 
-	if (message.channel.type === 'text') {
+	if (
+		message.channel.type === 'text' &&
+		message.channel.id !== '768598126373634109'
+	) {
 		if (!content.startsWith('!')) return
 		switch (content) {
 			case '!mentoria':
@@ -131,14 +133,11 @@ bot.on('message', async (message: Message) => {
 			case findTerm(content, 'participando'):
 				return isParticipatingCommand(message)
 
-			case findTerm(content, 'buscar'):
+			case findTerm(content, 'buscar repositório'):
 				await message.author.send(
 					'Hmmmm, estou procurando seu repositório :mag_right:'
 				)
 				return findRepositoryCommand(message)
-
-			case findTerm(content, 'time'):
-				return askChannelCommand(message)
 
 			case findTerm(content, 'estou na equipe'):
 				await message.author.send(
