@@ -3,7 +3,9 @@ import { searchRepository } from '../services/github/calls'
 import { Repository } from '../types/Repository'
 
 const findRepositoryCommand = async (message: Message) => {
-	const teamName = message.content.toLowerCase().replace('buscar time ', '')
+	const teamName = message.content
+		.toLowerCase()
+		.replace('buscar repositório ', '')
 
 	const repo: Repository = await searchRepository(teamName)
 

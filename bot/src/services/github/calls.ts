@@ -5,7 +5,10 @@ import { config } from 'dotenv'
 config()
 
 export const searchRepository = async (query: string) => {
-	const queryString = `apicon-hackathon-${query}`
+	const queryString = `apicon-hackathon-2020-${query
+		.replace(/ +/g, '-')
+		.toLowerCase()}`
+	console.log(queryString)
 
 	const { data } = await api.post(
 		'https://api.github.com/graphql',
