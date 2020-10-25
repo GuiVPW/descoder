@@ -8,13 +8,12 @@ const enterChannelCommand = async (message: Message, channel: Guild) => {
 
 	const user = channel.members.cache.get(message.author.id)
 
-	if (
-		!user!.hasPermission('MANAGE_ROLES') &&
-		!user!.roles.cache.find(role => role.name === 'Membro')
-	)
-		return await message.author.send(
-			'Você já faz parte de uma equipe! :expressionless:'
-		)
+	const tryer = user!.roles.cache.find(role => role.name !== 'Membro')
+
+	if (tryer && !user!.hasPermission('MANAGE_ROLES')) {
+		console.log(tryer)
+		return await message.author.send('Você já faz parte de uma equipe!')
+	}
 
 	const role = channel.roles.guild.roles.cache.find(
 		role => role.name === equipeName
@@ -27,7 +26,7 @@ const enterChannelCommand = async (message: Message, channel: Guild) => {
 
 	const removeAllRoles = await user!.roles.set([])
 
-	const addRole = await user?.roles.add(role.id)
+	const addRole = await user!.roles.add(role.id)
 
 	if (!addRole || !removeAllRoles)
 		return await message.author.send(
