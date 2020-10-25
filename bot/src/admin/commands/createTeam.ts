@@ -3,11 +3,17 @@ import createCategory from '../functions/createCategory'
 import createRole from '../functions/createRole'
 import createChannel from '../functions/createChannel'
 import { Canal, ChannelCreateResolve } from '../../types/ChannelCreated'
+import { RoleMentor } from '../../configurations/roles'
+
+const rolesId = {
+	mentor: '769189273127223316',
+	everyone: '740256417151189062',
+}
 
 const createTeamCommand = async (message: Message, channel: Guild) => {
 	const validate = async (): Promise<string[]> => {
 		if (message.content.includes('Everything')) {
-			const teamNames: string =
+			const teamNames =
 				'Union Squad, Team Connect, 42 destinos de um algoritmo, Code4Hope, IPay, Não tenho ainda, AISSI, Unidos do StackOverflow, FloripaHThon, L.L.L., LoveData, Paytrackers, Fênix, MDev - Made by Devs, 56Market, PayMasters, Foxy, Tech ET'
 			return teamNames.split(', ')
 		} else {
@@ -25,33 +31,13 @@ const createTeamCommand = async (message: Message, channel: Guild) => {
 		const roles: OverwriteResolvable[] = [
 			{
 				type: 'role',
-				id: '740257948919660707',
-				allow: 'ADMINISTRATOR',
-			},
-			{
-				type: 'role',
-				id: '740259203171745814',
-				allow: 'ADMINISTRATOR',
-			},
-			{
-				type: 'role',
-				id: '768110961445830677',
-				allow: 'ADMINISTRATOR',
-			},
-			{
-				type: 'role',
-				id: '768111403277090836',
-				allow: 'ADMINISTRATOR',
-			},
-			{
-				type: 'role',
-				id: '768580642077802496',
+				id: rolesId.everyone,
 				deny: ['VIEW_CHANNEL', 'CONNECT'],
 			},
 			{
 				type: 'role',
-				id: '766740925756997634',
-				deny: ['VIEW_CHANNEL', 'CONNECT'],
+				id: rolesId.mentor,
+				allow: RoleMentor,
 			},
 		]
 
@@ -108,13 +94,16 @@ const createTeamCommand = async (message: Message, channel: Guild) => {
 						return await message.reply(
 							`não consegui criar o canal de ${tipo} :worried:`
 						)
+					return await message.reply(
+						`categorias e roles criados com sucesso! :owl:`
+					)
 				})
 			} catch (e) {
 				console.log(e)
+				return await message.reply(`não consegui criar o canal... :worried:`)
 			}
 		}
 	})
-	return await message.reply(`categorias e roles criados com sucesso! :owl:`)
 }
 
 export default createTeamCommand
