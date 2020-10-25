@@ -1,55 +1,79 @@
-import { Message, MessageEmbed } from 'discord.js'
-import { getUsers } from '../services/express/calls'
-import { Mentor } from '../types/Mentores'
-import findMentorEmbed from '../utils/findMentor'
+import { Guild, Message, TextChannel } from 'discord.js'
+import { enterprises, categories } from './mentoria'
 
-const chooseCategoryCommand = async (message: Message) => {
+const chooseCategoryAndEnterpriseCommand = async (
+	message: Message,
+	channel: Guild
+) => {
 	const { content } = message
-	const { data } = await getUsers()
+	const categoryMatch = content.toLowerCase().match(/#(.*)$/)![1]
 
-	const mentores: Mentor[] = data
+	const replaced = categoryMatch.replace('da empresa @', '').split(' ')
 
-	if (!mentores)
-		return await message.reply(
-			'Não consegui acessar a API :worried: Procure um organizado na página `#tech-suporte`'
-		)
+	const category = replaced[0]
+	const enterprise = replaced[1]
 
-	const categoryMatch = content.toLowerCase().match(/#(.*)$/)!
-
-	if (categoryMatch === null)
+	if (!categoryMatch[1])
 		return await message.author.send(
 			'Desculpe, mas acho que você digitou errado a categoria. :worried:'
 		)
 
-	let category = categoryMatch[1]
+	if (!enterprises.includes(enterprise) || !categories.includes(category))
+		return await message.author.send(
+			'Desculpe, mas acho que você digitou errado a categoria ou o nome da empresa. :worried:'
+		)
 
-	const mentors = findMentorEmbed(mentores, category)
-
-	if (mentors.length === 0) {
+	if (categoryMatch.length === 0) {
 		return await message.author.send(
 			'Desculpe, mas não existem disponíveis nessa categoria :worried: \nTente novamente em algumas horas!'
 		)
-	} else {
-		await message.author.send(
-			`Muito bem!! :partying_face:\nCategoria **${
-				category === 'ux'
-					? category.toUpperCase()
-					: category.charAt(0).toUpperCase() + category.slice(1)
-			}** escolhida`
-		)
+	}
+
+	const uppercaseIt = (message: string) => {
+		return message.charAt(0).toUpperCase() + message.slice(1)
 	}
 
 	await message.author.send(
-		'Agora escolha seu **mentor**, digitando o nome com o comando `Escolher mentor {nome}` \nEx: `Escolher mentor Guilherme Vieira`',
-		new MessageEmbed({ timestamp: new Date() })
-			.setColor('#fafafa')
-			.setTitle(
-				`Lista de mentores com a categoria ${
-					category.charAt(0).toUpperCase() + category.slice(1)
-				}\n`
-			)
-			.addFields(mentors)
+		`Muito bem!! :partying_face:\nCategoria **${uppercaseIt(
+			category
+		)}** e empresa **${uppercaseIt(enterprise)}** escolhida!`
+	)
+
+	const getUserId = channel.members.cache.get(message.author.id)!
+
+	const findAuthorRole = getUserId!.roles.cache.find(
+		role => role.name !== '@everyone' && role.name !== 'Membros'
+	)
+
+	if (!findAuthorRole)
+		return message.author.send(
+			'Você ainda não faz parte de uma equipe para pedir mentoria...\nUtilize o comando `Entrar no canal` para fazer de uma equipe'
+		)
+
+	const findRole = channel.roles.cache.find(
+		role =>
+			role.name ===
+			`Mentor ${uppercaseIt(category)} - ${uppercaseIt(enterprise)}`
+	)!
+
+	const findMentorActive = findRole.members.find(
+		mentor => mentor.presence.status !== 'offline'
+	)!
+
+	if (!findMentorActive)
+		return await message.author.send(
+			'Não consegui encontrar nenhum mentor disponível, tente novamente durante as horas de mentoria... :worried:'
+		)
+
+	findMentorActive.send(
+		`Olá <@${findMentorActive.id}>, o usuário <@${getUserId.id}> da equipe **${
+			findAuthorRole!.name
+		}** acabou de pedir uma mentoria com você! :owl:\n Você pode apertar na mensagem acima e conversar diretamente com ele, ou mandar uma mensagem no chat #geral da equipe dele.`
+	)
+
+	return await message.author.send(
+		`Mensagem ao mentor ${findMentorActive} enviada :owl:`
 	)
 }
 
-export default chooseCategoryCommand
+export default chooseCategoryAndEnterpriseCommand
