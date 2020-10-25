@@ -9,9 +9,9 @@ const findRepositoryCommand = async (message: Message) => {
 
 	const repo: Repository = await searchRepository(teamName)
 
-	if (!repo)
+	if (!repo || repo === null || undefined)
 		return await message.author.send(
-			'É... não consegui encontrar nada :worried: \nSeu time parece não ter um repositório no github... \nAconselho buscar um organizador pelo canal de texto ***#tech-suporte***'
+			'É... não consegui encontrar nada :worried: \nSeu time parece não ter um repositório no github...\nVocê pode entrar em contato com um organizador pelo canal de texto ***#tech-suporte*** ou pode criar o repositório para sua equipe em: https://classroom.github.com/g/n9IwtND3'
 		)
 
 	await message.author.send(

@@ -5,7 +5,7 @@ import { Equipe } from '../types/Equipes'
 const findChannelCommand = async (message: Message) => {
 	const equipeName = message.content
 		.replace('Procurar equipe ', '')
-		.replace('Procurar equipe ', '')
+		.replace('procurar equipe ', '')
 		.replace(/\s/g, '_')
 
 	const { data } = await getTeam(equipeName)
