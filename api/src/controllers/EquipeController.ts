@@ -23,7 +23,7 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
 		const { nome } = req.params
 
 		const equipe = await Equipe.findOne({
-			nome: nome.replace('_', ' ')
+			nome: nome.replace(/_/g, ' ')
 		})
 
 		if (!equipe) return res.status(502).json('Equipe não encontrada...')
