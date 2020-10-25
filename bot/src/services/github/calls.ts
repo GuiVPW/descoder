@@ -5,8 +5,9 @@ import { config } from 'dotenv'
 config()
 
 export const searchRepository = async (query: string) => {
-	const queryString = `apicon-hackathon-2020-${query
+	const queryString = `hackathon-apicon-2020-${query
 		.replace(/ +/g, '-')
+		.replace('!', '')
 		.toLowerCase()}`
 	console.log(queryString)
 
@@ -15,19 +16,19 @@ export const searchRepository = async (query: string) => {
 		{
 			query: queryRepo,
 			variables: {
-				queryString: queryString,
+				queryString,
 			},
 		},
 		{
 			timeout: 5000,
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+				Authorization: `Bearer a8545793568d2e0ce2569ce39d1c45f1711516a4`,
 			},
 		}
 	)
 
-	if (!data) return false
+	if (!data) return
 
 	return data.data.repository
 }
