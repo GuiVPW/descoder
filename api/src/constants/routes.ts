@@ -10,6 +10,7 @@ routes.get('/', (req: Request, res: Response) => {
 
 routes.get('/users', users.indexAll)
 routes.get('/user/:nome', users.index)
+routes.get('/mentors', users.findMentors)
 routes.post('/users', users.store)
 
 routes.get('/equipes', equipes.indexAll)

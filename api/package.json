@@ -29,7 +29,8 @@
  },
  "scripts": {
   "dev": "nodemon index.ts",
-  "start": "ts-node index.ts"
+	"start": "ts-node index.ts",
+	"deploy": "git add . && git commit -am 'make it better' && git push heroku master"
  },
  "workspaces": [
   "client"
