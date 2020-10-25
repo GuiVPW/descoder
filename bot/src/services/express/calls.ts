@@ -19,6 +19,25 @@ export const getUser = async (nome: string): Promise<any | Mentor> => {
 	}
 }
 
+export const getMentores = async (
+	skills: string,
+	empresa: string
+): Promise<any | Mentor> => {
+	try {
+		const mentors: Mentor = await api.get(`/mentors`, {
+			data: {
+				skills,
+				empresa,
+			},
+		})
+		if (!mentors) return false
+		return mentors
+	} catch (e) {
+		console.log(e)
+		return false
+	}
+}
+
 export const getTeam = async (nome: string): Promise<any | Equipe> => {
 	try {
 		const equipe = await api.get(`/equipe/${nome}`)
@@ -36,11 +55,13 @@ export const getAllTeams = async (): Promise<any | Equipe[]> => {
 	try {
 		const equipes = await api.get(`/equipes`)
 
+		console.log(equipes.data)
+
 		if (!equipes) return false
 
 		return equipes
 	} catch (e) {
-		console.log(e)
+		console.log(e, 'parou aqui')
 		return false
 	}
 }

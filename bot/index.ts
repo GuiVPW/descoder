@@ -3,56 +3,61 @@ import dotenv from 'dotenv'
 import helpCommand from './src/commands/help'
 import chooseCategoryCommand from './src/commands/categorias'
 import askMentoryCommand from './src/commands/mentoria'
-import chooseMentorCommand from './src/commands/mentor'
+// import chooseMentorCommand from './src/commands/mentor'
 import deleteAllCommand from './src/commands/delete'
 import findTerm from './src/utils/findTerm'
 import isParticipatingCommand from './src/commands/participando'
 import findRepositoryCommand from './src/commands/repositorio'
-import askChannelCommand from './src/commands/canal'
+// import askChannelCommand from './src/commands/canal'
 import findChannelCommand from './src/commands/equipes'
 import enterChannelCommand from './src/commands/entrar'
 import acessoCommand from './src/commands/acess'
 import createTeamCommand from './src/admin/commands/createTeam'
 import listTeamsCommand from './src/commands/lista'
+import moveToChannelCommand from './src/mentores/commands/move'
+import chooseMentorCommand from './src/commands/mentor'
 dotenv.config()
 
 export const bot = new discord.Client()
 
 const token = process.env.TOKEN
-const channelId = `${process.env.CHANNEL_ID}`
+export const channelId = `${process.env.CHANNEL_ID}`
 
 bot.login(token)
 
+const firstChannelId = '755195606850600961',
+	authenticationChannelId = '768967928044322847',
+	memberRoleId = '768750315703894016'
+
 bot.on('guildMemberAdd', async member => {
 	const logChannel = member.guild.channels.cache.find(
-		ch => ch.id === '766740926437392407'
+		ch => ch.id === firstChannelId
 	)
 
 	const channel = bot.guilds.cache.get(channelId)!
 
-	const role = channel.roles.guild.roles.cache.find(
-		role => role.name === 'Membro'
-	)!
+	const role = channel.roles.guild.roles.cache.get(memberRoleId)!
 
 	const addRole = member.roles.add(role)
 
-	if (!logChannel || !addRole) return
+	if (!logChannel || !addRole)
+		return console.log('logChannel', logChannel, 'addRole', addRole)
 
 	if (
 		!((logChannel): logChannel is TextChannel => logChannel.type === 'text')(
 			logChannel
 		)
 	)
-		return
+		return console.log('n é tipo texto', logChannel.type)
 
 	logChannel.send(
-		`Olá ${member}, bem-vindo ao canal da Prensa, aceita um cafézinho? :coffee:`
+		`Olá ${member}, bem-vindo ao canal da Prensa, aceita um cafézinho? :coffee:\nPara entrar no seu canal, entre no canal <#768967928044322847> e digite "!acesso". :owl:`
 	)
 })
 
 bot.on('guildMemberRemove', member => {
 	const exitChannel = member.guild.channels.cache.find(
-		ch => ch.id === '766740926437392407'
+		ch => ch.id === firstChannelId
 	)
 
 	if (!exitChannel) return
@@ -72,7 +77,7 @@ bot.on('message', async (message: Message) => {
 
 	const { content } = message
 
-	if (message.channel.id === '768598126373634109') {
+	if (message.channel.id === '768966752372785202') {
 		const contentPrivate = content
 		switch (contentPrivate) {
 			case findTerm(contentPrivate, '!newteam'):
@@ -88,8 +93,15 @@ bot.on('message', async (message: Message) => {
 	}
 
 	if (
+		message.channel.id === authenticationChannelId &&
+		(message.content === '!acesso' || message.content === 'acesso')
+	) {
+		return acessoCommand(message)
+	}
+
+	if (
 		message.channel.type === 'text' &&
-		message.channel.id !== '768598126373634109'
+		message.channel.id !== '768966752372785202'
 	) {
 		if (!content.startsWith('!')) return
 		switch (content) {
@@ -99,9 +111,6 @@ bot.on('message', async (message: Message) => {
 						process.env.BOT_ID +
 						'> e execute o comando `Agendar mentoria` :wink:'
 				)
-				break
-			case '!acesso':
-				acessoCommand(message)
 				break
 			case '!deleteAll':
 				deleteAllCommand(message)
@@ -122,14 +131,9 @@ bot.on('message', async (message: Message) => {
 			case findTerm(content, 'mentoria'):
 				return askMentoryCommand(message)
 
-			case findTerm(content, 'escolher categoria '):
-				message.author.send(
-					'Procurando mentores nessa categoria :face_with_monocle:'
-				)
-				return chooseCategoryCommand(message)
-
-			case findTerm(content, 'escolher mentor'):
-				return chooseMentorCommand(message)
+			case findTerm(content, 'escolher categoria ') &&
+				findTerm(content, 'da empresa '):
+				return chooseCategoryCommand(message, channel)
 
 			case findTerm(content, 'participando'):
 				return isParticipatingCommand(message)
