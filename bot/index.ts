@@ -3,31 +3,28 @@ import dotenv from 'dotenv'
 import helpCommand from './src/commands/help'
 import chooseCategoryCommand from './src/commands/categorias'
 import askMentoryCommand from './src/commands/mentoria'
-// import chooseMentorCommand from './src/commands/mentor'
 import deleteAllCommand from './src/commands/delete'
 import findTerm from './src/utils/findTerm'
 import isParticipatingCommand from './src/commands/participando'
 import findRepositoryCommand from './src/commands/repositorio'
-// import askChannelCommand from './src/commands/canal'
 import findChannelCommand from './src/commands/equipes'
 import enterChannelCommand from './src/commands/entrar'
 import acessoCommand from './src/commands/acess'
 import createTeamCommand from './src/admin/commands/createTeam'
 import listTeamsCommand from './src/commands/lista'
-import moveToChannelCommand from './src/mentores/commands/move'
-import chooseMentorCommand from './src/commands/mentor'
+
 dotenv.config()
 
 export const bot = new discord.Client()
 
-const token = process.env.TOKEN
-export const channelId = `${process.env.CHANNEL_ID}`
+const token = 'NzY2NzUzMDU3MjI0MTMwNTkx.X4n8bg.uBBgYllEyLUB6VpXDRamplSiY30'
 
-bot.login(token)
-
+export const channelId = '740256417151189062'
 const firstChannelId = '755195606850600961',
 	authenticationChannelId = '768967928044322847',
 	memberRoleId = '768750315703894016'
+
+bot.login(token)
 
 bot.on('guildMemberAdd', async member => {
 	const logChannel = member.guild.channels.cache.find(
@@ -55,22 +52,22 @@ bot.on('guildMemberAdd', async member => {
 	)
 })
 
-bot.on('guildMemberRemove', member => {
-	const exitChannel = member.guild.channels.cache.find(
-		ch => ch.id === firstChannelId
-	)
+// bot.on('guildMemberRemove', member => {
+// 	const exitChannel = member.guild.channels.cache.find(
+// 		ch => ch.id === firstChannelId
+// 	)
 
-	if (!exitChannel) return
+// 	if (!exitChannel) return
 
-	if (
-		!((exitChannel): exitChannel is TextChannel => exitChannel.type === 'text')(
-			exitChannel
-		)
-	)
-		return
+// 	if (
+// 		!((exitChannel): exitChannel is TextChannel => exitChannel.type === 'text')(
+// 			exitChannel
+// 		)
+// 	)
+// 		return
 
-	exitChannel.send(`Adeus ${member}, sentiremos sua falta aqui :pensive:`)
-})
+// 	exitChannel.send(`Adeus ${member}, sentiremos sua falta aqui :pensive:`)
+// })
 
 bot.on('message', async (message: Message) => {
 	const channel = bot.guilds.cache.get(channelId)!
@@ -159,6 +156,7 @@ bot.on('message', async (message: Message) => {
 
 			case findTerm(content, 'obrigado') || findTerm(content, 'obrigada'):
 				return message.reply('Assim você me deixa sem jeito :blush: \nPor nada')
+
 			case findTerm(content, 'quem é guilherme'):
 				message.reply(
 					'Meu criador, o dono da minha vida, para alguns um ponto de luz, para outros algo irreal, para o faminto comida, para o rico a felicidade, para a criança o pai, para o ingênuo a sabedoria. :heart_eyes:'
