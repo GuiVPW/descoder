@@ -52,16 +52,12 @@ export const getTeam = async (nome: string): Promise<any | Equipe> => {
 }
 
 export const getAllTeams = async (): Promise<any | Equipe[]> => {
-	try {
-		const equipes = await api.get(`/equipes`)
+	const equipes = await api.get(`/equipes`)
 
-		console.log(equipes.data)
-
-		if (!equipes) return false
-
-		return equipes
-	} catch (e) {
-		console.log(e, 'parou aqui')
+	if (!equipes) {
+		console.log(equipes)
 		return false
 	}
+
+	return equipes
 }
